@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Baking-App-Project</string>
+    <string name="image_not_available">Image is not available</string>
+
+
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
+
+</resources>

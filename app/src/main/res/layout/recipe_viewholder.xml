@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@android:dimen/thumbnail_width"
+    android:layout_height="128dp"
+
+    android:paddingBottom="0dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="60dp"
+    android:paddingTop="20dp">
+
+    <FrameLayout
+        android:id="@+id/recipe_viewholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/border">    <!--Source: https://stackoverflow.com/questions/8203606/android-how-to-draw-a-border-to-a-linearlayout -->
+
+        <ImageView
+            android:id="@+id/recipe_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_notification_clear_all" />
+
+        <TextView
+            android:id="@+id/recipe_image_alternative"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="TextView"
+            tools:text="@string/image_not_available" />
+
+    </FrameLayout>
+
+</FrameLayout>
