@@ -1,30 +1,19 @@
 package com.udacity.bakingapp;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import com.udacity.bakingapp.adapter.CookbookAdapter;
-import com.udacity.bakingapp.adapter.RecipeAdapter;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.recipeservice.CookbookService;
-import com.udacity.bakingapp.recipeservice.CookbookStore;
 
 import java.util.List;
 
-import butterknife.BindBool;
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,39 +46,25 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected List<Recipe> doInBackground(Void... params) {
-            CookbookService service = new CookbookService();
-            List<Recipe> recipeList = service.getRecipes();
+            List<Recipe> recipeList = CookbookService.getRecipes();
             return recipeList;
         }
 
         @Override
         protected void onPostExecute(List<Recipe> recipeList) {
-            CookbookStore.setCookbook(recipeList);
             cookbook = recipeList;
-            CookbookAdapter recipeAdapter = new CookbookAdapter(context, recipeList, new ListItemClickListener() {
-                @Override
-                public void onListItemClick(int recipeId) {
-                    onRecipeChosen(recipeId);
-                }
-            });
+            CookbookAdapter recipeAdapter = new CookbookAdapter(context, recipeList, recipeId -> onRecipeChosen(recipeId));
             recyclerRecipes.setAdapter(recipeAdapter);
         }
 
     }
 
     public void onRecipeChosen(int recipeId) {
-        Recipe chosenRecipe = null;
-        for (Recipe i: cookbook) {
-            if(i.getId() == recipeId){
-                chosenRecipe = i;
-
-            }
-        }
-//        Bundle args = new Bundle();
-//        args.putInt("chosenRecipeId", chosenRecipe.getId());
-        CookbookStore.setRecipeId(chosenRecipe.getId());
-        Intent startChildActivityIntent = new Intent(MainActivity.this, RecipeActivity.class);
-        startChildActivityIntent.putExtra(Intent.EXTRA_TEXT, chosenRecipe.getId());
-        startActivity(startChildActivityIntent);
+        Recipe chosenRecipe = cookbook.stream().filter(x -> x.getId() == recipeId).findFirst().get();
+        Bundle bundle = new Bundle();
+        bundle.putInt("chosenRecipeId", chosenRecipe.getId());
+        Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

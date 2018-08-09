@@ -13,20 +13,23 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class CookbookService {
 
-    ICookbookService service;
+    private static ICookbookService service;
+    private static List<Recipe> recipes = null;
 
-    public CookbookService() {
-
-        this.service = new Retrofit.Builder()
-                .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build()
-                .create(ICookbookService.class);
-
+    public static List<Recipe> getRecipes() {
+        if(recipes == null){
+            recipes = getRecipesFromService();
+        }
+        return recipes;
     }
 
+    public static List<Recipe> getRecipesFromService() {
+        service = new Retrofit.Builder()
+            .baseUrl("https://d17h27t6h515a5.cloudfront.net/")
+            .addConverterFactory(JacksonConverterFactory.create())
+            .build()
+            .create(ICookbookService.class);
 
-    public List<Recipe> getRecipes() {
         try {
             Response response = service.getRecipes().execute();
             List<Recipe> recipe = (List<Recipe>)response.body();
