@@ -5,10 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.udacity.bakingapp.ListItemClickListener;
+import com.udacity.bakingapp.ItemClickListener;
 import com.udacity.bakingapp.R;
-import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.model.Step;
 
 import butterknife.BindView;
@@ -22,19 +20,24 @@ public class StepViewHolder extends RecyclerView.ViewHolder {
 
     Step step;
     Context context;
-    ListItemClickListener listItemClickListener;
+    ItemClickListener itemClickListener;
 
 
-    public StepViewHolder(View itemView, Context context, ListItemClickListener listItemClickListener) {
+    public StepViewHolder(View itemView, Context context, ItemClickListener itemClickListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.context = context;
-        this.listItemClickListener = listItemClickListener;
+        this.itemClickListener = itemClickListener;
     }
 
     public void bind(Step step) {
         this.step = step;
         recipe_step_short_description.setText(step.getShortDescription());
+    }
+
+    @OnClick
+    public void onClick(){
+        itemClickListener.onItemClick(step.getId());
     }
 
 }

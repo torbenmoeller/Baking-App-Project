@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.udacity.bakingapp.ListItemClickListener;
+import com.udacity.bakingapp.ItemClickListener;
 import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.viewholder.RecipeViewHolder;
@@ -17,9 +17,9 @@ public class CookbookAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
     private Context context;
     private List<Recipe> cookbook;
-    private ListItemClickListener clickListener;
+    private ItemClickListener clickListener;
 
-    public CookbookAdapter(Context context, List<Recipe> cookbook, ListItemClickListener onItemClickListener) {
+    public CookbookAdapter(Context context, List<Recipe> cookbook, ItemClickListener onItemClickListener) {
         this.context = context;
         this.cookbook = cookbook;
         this.clickListener = onItemClickListener;

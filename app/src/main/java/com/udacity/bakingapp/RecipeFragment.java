@@ -1,8 +1,6 @@
 package com.udacity.bakingapp;
 
-import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,13 +14,13 @@ import android.widget.TextView;
 import com.udacity.bakingapp.adapter.RecipeAdapter;
 import com.udacity.bakingapp.model.Ingredient;
 import com.udacity.bakingapp.model.Recipe;
-import com.udacity.bakingapp.model.Step;
 import com.udacity.bakingapp.recipeservice.CookbookService;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class RecipeFragment extends android.support.v4.app.Fragment {
@@ -37,8 +35,8 @@ public class RecipeFragment extends android.support.v4.app.Fragment {
     NestedScrollView nestedScrollview;
 
 
-
     private Unbinder unbinder;
+    OnStepSelected mCallback;
     Context context;
     Recipe recipe = null;
 
@@ -55,7 +53,7 @@ public class RecipeFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        RecipeAdapter adapter = new RecipeAdapter(context, recipe, recipeId -> onStepChosen(recipeId));
+        RecipeAdapter adapter = new RecipeAdapter(context, recipe, recipeId -> mCallback.onStepSelection(recipeId));
         ingredients.setText(getIngredientsList(recipe.getIngredients()));
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayout.VERTICAL);
@@ -68,6 +66,10 @@ public class RecipeFragment extends android.support.v4.app.Fragment {
         unbinder.unbind();
     }
 
+    @OnClick(R.id.add_to_widget)
+    public void onAddWidgetClick(){
+
+    }
 
     public String getIngredientsList(List<Ingredient> ingredients){
         StringBuilder stringBuilder = new StringBuilder();
@@ -85,13 +87,20 @@ public class RecipeFragment extends android.support.v4.app.Fragment {
         return stringBuilder.toString().trim();
     }
 
+    // Override onAttach to make sure that the container activity has implemented the callback
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-    public void onStepChosen(int recipeId) {
-        Step chosenStep = recipe.getSteps().stream().filter(x -> x.getId() == recipeId).findFirst().get();
-        Bundle bundle = new Bundle();
-        bundle.putInt("chosenStep", chosenStep.getId());
-        Intent startChildActivityIntent = new Intent(context, StepActivity.class);
-        startChildActivityIntent.putExtras(bundle);
-        startActivity(startChildActivityIntent);
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try {
+            mCallback = (OnStepSelected) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement "+ OnStepSelected.class.getSimpleName());
+        }
     }
+
+
 }

@@ -1,14 +1,13 @@
 package com.udacity.bakingapp.viewholder;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.udacity.bakingapp.ListItemClickListener;
+import com.udacity.bakingapp.ItemClickListener;
 import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.model.Recipe;
 
@@ -26,15 +25,15 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
     Recipe recipe;
     Context context;
-    ListItemClickListener listItemClickListener;
+    ItemClickListener itemClickListener;
 
 
 
-    public RecipeViewHolder(View itemView, Context context, ListItemClickListener listItemClickListener) {
+    public RecipeViewHolder(View itemView, Context context, ItemClickListener itemClickListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.context = context;
-        this.listItemClickListener = listItemClickListener;
+        this.itemClickListener = itemClickListener;
     }
 
     public ImageView getImageView() {
@@ -69,6 +68,6 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
     @OnClick
     public void OnClick(View view){
-        this.listItemClickListener.onListItemClick(recipe.getId());
+        this.itemClickListener.onItemClick(recipe.getId());
     }
 }

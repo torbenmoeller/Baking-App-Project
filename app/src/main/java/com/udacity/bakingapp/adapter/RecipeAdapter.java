@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.udacity.bakingapp.ListItemClickListener;
+import com.udacity.bakingapp.ItemClickListener;
 import com.udacity.bakingapp.R;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.model.Step;
@@ -16,9 +16,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<StepViewHolder> {
 
     private Context context;
     private Recipe recipe;
-    private ListItemClickListener clickListener;
+    private ItemClickListener clickListener;
 
-    public RecipeAdapter(Context context, Recipe recipe, ListItemClickListener onItemClickListener) {
+    public RecipeAdapter(Context context, Recipe recipe, ItemClickListener onItemClickListener) {
         this.context = context;
         this.recipe = recipe;
         this.clickListener = onItemClickListener;
