@@ -4,6 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +17,7 @@ import com.udacity.bakingapp.adapter.CookbookAdapter;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.recipeservice.CookbookService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindInt;
@@ -24,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerRecipes;
     @BindInt(R.integer.spancount)
     int spancount;
+
+    @Nullable
+    private ServiceIdlingResource serviceIdlingResource;
 
     Context context;
     List<Recipe> cookbook = null;
@@ -46,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected List<Recipe> doInBackground(Void... params) {
+
+            if (serviceIdlingResource != null) {
+                serviceIdlingResource.setIdleState(false);
+            }
+
             List<Recipe> recipeList = CookbookService.getRecipes();
             return recipeList;
         }
@@ -55,6 +69,15 @@ public class MainActivity extends AppCompatActivity {
             cookbook = recipeList;
             CookbookAdapter recipeAdapter = new CookbookAdapter(context, recipeList, recipeId -> onRecipeChosen(recipeId));
             recyclerRecipes.setAdapter(recipeAdapter);
+
+
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                MainActivity.this.onDone();
+                if (serviceIdlingResource != null) {
+                    serviceIdlingResource.setIdleState(true);
+                }
+            }, 10000);
         }
 
     }
@@ -67,4 +90,19 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (serviceIdlingResource == null) {
+            serviceIdlingResource = new ServiceIdlingResource();
+        }
+        return serviceIdlingResource;
+    }
+
+    public void onDone() {
+
+    }
+
 }
