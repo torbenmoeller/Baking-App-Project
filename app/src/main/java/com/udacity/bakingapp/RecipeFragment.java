@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.udacity.bakingapp.adapter.RecipeAdapter;
 import com.udacity.bakingapp.model.Ingredient;
@@ -68,7 +69,7 @@ public class RecipeFragment extends android.support.v4.app.Fragment {
 
     @OnClick(R.id.add_to_widget)
     public void onAddWidgetClick(){
-
+        Toast.makeText(getActivity(), "Hello widget", Toast.LENGTH_LONG).show();
     }
 
     public String getIngredientsList(List<Ingredient> ingredients){
