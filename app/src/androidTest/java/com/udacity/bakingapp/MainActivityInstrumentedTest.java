@@ -41,7 +41,7 @@ public class MainActivityInstrumentedTest {
         onView(withId(R.id.recycler_recipes))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, MyViewAction.clickChildViewWithId(R.id.recipe_viewholder)));
         intended(allOf(
-                hasExtraWithKey("chosenRecipeId"),
+                hasExtraWithKey(Keys.chosenRecipeId),
                 toPackage(PACKAGE)
         ));
     }

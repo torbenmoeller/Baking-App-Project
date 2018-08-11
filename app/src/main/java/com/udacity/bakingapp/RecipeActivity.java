@@ -24,7 +24,7 @@ public class RecipeActivity extends AppCompatActivity implements OnStepSelected 
         Bundle bundle = getIntent().getExtras();
         setContentView(R.layout.activity_recipe);
 
-        this.recipeId = bundle.getInt("chosenRecipeId");
+        this.recipeId = bundle.getInt(Keys.chosenRecipeId);
         this.recipe = CookbookService.getRecipes().stream().filter(x -> x.getId() == recipeId).findFirst().get();
 
         RecipeFragment recipeFragment = new RecipeFragment();
@@ -33,10 +33,8 @@ public class RecipeActivity extends AppCompatActivity implements OnStepSelected 
         fragmentManager.beginTransaction()
                 .add(R.id.frame_cookbook, recipeFragment)
                 .commit();
-//        ButterKnife.bind(this);
 
-
-        vpPager = (ViewPager) findViewById(R.id.vpPager);
+        vpPager = findViewById(R.id.vpPager);
         viewPagerAvailable = vpPager != null;
         if (viewPagerAvailable) {
             stepPagerAdapter = new StepPagerAdapter(getSupportFragmentManager(), recipe.getSteps());
@@ -53,8 +51,8 @@ public class RecipeActivity extends AppCompatActivity implements OnStepSelected 
             vpPager.setCurrentItem(index);
         } else {
             Bundle bundle = new Bundle();
-            bundle.putInt("chosenRecipeId", recipeId);
-            bundle.putInt("chosenStepId", chosenStep.getId());
+            bundle.putInt(Keys.chosenRecipeId, recipeId);
+            bundle.putInt(Keys.chosenStepId, chosenStep.getId());
             Intent startChildActivityIntent = new Intent(this, StepActivity.class);
             startChildActivityIntent.putExtras(bundle);
             startActivity(startChildActivityIntent);

@@ -1,6 +1,7 @@
 package com.udacity.bakingapp.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<StepViewHolder> {
         this.clickListener = onItemClickListener;
     }
 
+    @NonNull
     @Override
-    public StepViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public StepViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         int layout = R.layout.step_viewholder;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -35,7 +37,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<StepViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(StepViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull StepViewHolder holder, final int position) {
         final Step step = recipe.getSteps().get(position);
         holder.bind(step);
     }

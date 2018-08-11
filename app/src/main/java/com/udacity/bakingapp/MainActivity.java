@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRecipeChosen(int recipeId) {
         Recipe chosenRecipe = cookbook.stream().filter(x -> x.getId() == recipeId).findFirst().get();
         Bundle bundle = new Bundle();
-        bundle.putInt("chosenRecipeId", chosenRecipe.getId());
+        bundle.putInt(Keys.chosenRecipeId, chosenRecipe.getId());
         Intent intent = new Intent(MainActivity.this, RecipeActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);

@@ -8,6 +8,8 @@ import com.udacity.bakingapp.adapter.StepPagerAdapter;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.recipeservice.CookbookService;
 
+import java.security.Key;
+
 import butterknife.ButterKnife;
 
 public class StepActivity extends AppCompatActivity {
@@ -24,12 +26,11 @@ public class StepActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Bundle bundle = getIntent().getExtras();
-        int recipeId = bundle.getInt("chosenRecipeId");
-        stepId = bundle.getInt("chosenStepId");
+        int recipeId = bundle.getInt(Keys.chosenRecipeId);
+        stepId = bundle.getInt(Keys.chosenStepId);
         this.recipe = CookbookService.getRecipes().stream().filter(x -> x.getId() == recipeId).findFirst().get();
 
-
-        vpPager = (ViewPager) findViewById(R.id.vpPager);
+        vpPager = findViewById(R.id.vpPager);
         stepPagerAdapter = new StepPagerAdapter(getSupportFragmentManager(), recipe.getSteps());
         vpPager.setAdapter(stepPagerAdapter);
     }

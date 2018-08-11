@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="TextView"
+            android:text="@string/image_not_available"
             tools:text="@string/image_not_available" />
 
     </android.support.v7.widget.CardView>

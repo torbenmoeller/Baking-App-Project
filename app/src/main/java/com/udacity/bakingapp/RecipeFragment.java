@@ -2,6 +2,7 @@ package com.udacity.bakingapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +17,11 @@ import com.udacity.bakingapp.adapter.RecipeAdapter;
 import com.udacity.bakingapp.model.Ingredient;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.recipeservice.CookbookService;
+import com.udacity.bakingapp.widget.AppWidgetService;
 
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,6 +38,9 @@ public class RecipeFragment extends android.support.v4.app.Fragment {
     @BindView(R.id.nested_scrollview)
     NestedScrollView nestedScrollview;
 
+    @BindString(R.string.widget_update_success)
+    String widgetUpdateSuccess;
+
 
     private Unbinder unbinder;
     OnStepSelected mCallback;
@@ -42,18 +48,18 @@ public class RecipeFragment extends android.support.v4.app.Fragment {
     Recipe recipe = null;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe, parent, false);
         unbinder = ButterKnife.bind(this, rootView);
         context = getContext();
         Bundle bundle = getArguments();
-        int recipeId  = bundle.getInt("chosenRecipeId");
+        int recipeId  = bundle.getInt(Keys.chosenRecipeId);
         this.recipe = CookbookService.getRecipes().stream().filter(x -> x.getId() == recipeId).findFirst().get();
         return rootView;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         RecipeAdapter adapter = new RecipeAdapter(context, recipe, recipeId -> mCallback.onStepSelection(recipeId));
         ingredients.setText(getIngredientsList(recipe.getIngredients()));
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -69,7 +75,11 @@ public class RecipeFragment extends android.support.v4.app.Fragment {
 
     @OnClick(R.id.add_to_widget)
     public void onAddWidgetClick(){
-        Toast.makeText(getActivity(), "Hello widget", Toast.LENGTH_LONG).show();
+            AppWidgetService.updateWidget(context, recipe);
+
+        Toast.makeText(getActivity(), widgetUpdateSuccess, Toast.LENGTH_LONG).show();
+//            Misc.makeSnackBar(this, mParentLayout, String.format(getString(R.string.added_to_widget), mRecipe.getName()), false);
+
     }
 
     public String getIngredientsList(List<Ingredient> ingredients){

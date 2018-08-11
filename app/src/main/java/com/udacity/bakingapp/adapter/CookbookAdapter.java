@@ -1,6 +1,7 @@
 package com.udacity.bakingapp.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +26,9 @@ public class CookbookAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
         this.clickListener = onItemClickListener;
     }
 
+    @NonNull
     @Override
-    public RecipeViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         int layout = R.layout.recipe_viewholder;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -35,7 +37,7 @@ public class CookbookAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(RecipeViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull RecipeViewHolder holder, final int position) {
         final Recipe recipe = cookbook.get(position);
         holder.bind(recipe);
     }

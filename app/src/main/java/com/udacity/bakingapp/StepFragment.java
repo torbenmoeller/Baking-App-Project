@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -26,6 +27,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.udacity.bakingapp.model.Step;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -37,7 +39,8 @@ public class StepFragment extends Fragment {
     SimpleExoPlayerView exoPlayerView;
     @BindView(R.id.recipe_step_short_description)
     TextView recipeStepShortDescription;
-
+    @BindString(R.string.app_name)
+    String appName;
 
     private Unbinder unbinder;
     private Context context;
@@ -45,12 +48,11 @@ public class StepFragment extends Fragment {
     private SimpleExoPlayer exoPlayer;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
-    private NotificationManager mNotificationManager;
 
     Step step = null;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_step, parent, false);
         unbinder = ButterKnife.bind(this, rootView);
         context = getContext();
@@ -58,7 +60,7 @@ public class StepFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         setDescription();
         String url = step.getVideoUrl();
         if(url.isEmpty()){
@@ -111,7 +113,7 @@ public class StepFragment extends Fragment {
 //            exoPlayer.addListener(context);
 
         // Prepare the MediaSource.
-        String userAgent = Util.getUserAgent(context, "ClassicalMusicQuiz");
+        String userAgent = Util.getUserAgent(context, appName);
         MediaSource mediaSource = new ExtractorMediaSource(
                 mediaUri,
                 new DefaultDataSourceFactory(

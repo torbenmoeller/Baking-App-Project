@@ -2,11 +2,18 @@ package com.udacity.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
+import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Recipe implements Parcelable {
 
@@ -118,4 +125,24 @@ public class Recipe implements Parcelable {
         }
     };
 
+    public static String toJson(Recipe recipe) {
+        try {
+            Gson gson = new Gson();
+            return gson.toJson(recipe);
+        } catch (Exception e) {
+            Log.e("Problem parsing object to json", "Recipe_Parsing");
+            return null;
+        }
+    }
+
+    public static Recipe fromJson(String json) {
+        try {
+            Gson gson = new Gson();
+            Recipe recipe = gson.fromJson(json, Recipe.class);
+            return recipe;
+        } catch (Exception e) {
+            Log.e("Problem parsing json", "Recipe_Parsing");
+            return null;
+        }
+    }
 }

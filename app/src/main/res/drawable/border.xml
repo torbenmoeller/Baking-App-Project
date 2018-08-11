@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Source: https://stackoverflow.com/questions/8203606/android-how-to-draw-a-border-to-a-linearlayout -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <stroke
-        android:width="5dip"
-        android:color="@android:color/black" />
-</shape>

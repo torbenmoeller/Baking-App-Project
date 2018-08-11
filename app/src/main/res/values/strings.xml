@@ -2,5 +2,7 @@
     <string name="app_name">Baking-App-Project</string>
     <string name="image_not_available">Image is not available</string>
     <string name="add_to_widget">Add to widget</string>
-    <string name="data_not_available">Data not available</string>
-</resources>
+    <string name="data_not_available">Data not available, please use the "Add to Widget" Button in the app.</string>
+    <string name="widget_update_success">Widget successfully updated!</string>
+    <string name="recipe_viewholder_content_description">Recipe Image</string>
+    </resources>
