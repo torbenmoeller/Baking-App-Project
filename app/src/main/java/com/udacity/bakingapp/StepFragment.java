@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -25,7 +26,9 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.model.Step;
+import com.udacity.bakingapp.recipeservice.CookbookService;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -37,6 +40,7 @@ public class StepFragment extends Fragment {
 
     @BindView(R.id.exo_player_view)
     SimpleExoPlayerView exoPlayerView;
+    @Nullable
     @BindView(R.id.recipe_step_short_description)
     TextView recipeStepShortDescription;
     @BindString(R.string.app_name)
@@ -56,7 +60,12 @@ public class StepFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_step, parent, false);
         unbinder = ButterKnife.bind(this, rootView);
         context = getContext();
-        return  rootView;
+        Bundle bundle = getArguments();
+        int recipeId  = bundle.getInt(Keys.chosenRecipeId);
+        int stepId  = bundle.getInt(Keys.chosenStepId);
+        Recipe recipe = CookbookService.getRecipes().stream().filter(x -> x.getId() == recipeId).findFirst().get();
+        this.step = recipe.getSteps().stream().filter(x -> x.getId() == stepId).findFirst().get();
+        return rootView;
     }
 
     @Override
@@ -82,10 +91,6 @@ public class StepFragment extends Fragment {
             return;
         }
         recipeStepShortDescription.setText(step.getDescription());
-    }
-
-    public void bind(Step step){
-        this.step = step;
     }
 
     @Override public void onDestroyView() {

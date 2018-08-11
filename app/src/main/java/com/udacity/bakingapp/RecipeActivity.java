@@ -37,7 +37,8 @@ public class RecipeActivity extends AppCompatActivity implements OnStepSelected 
         vpPager = findViewById(R.id.vpPager);
         viewPagerAvailable = vpPager != null;
         if (viewPagerAvailable) {
-            stepPagerAdapter = new StepPagerAdapter(getSupportFragmentManager(), recipe.getSteps());
+
+            stepPagerAdapter = new StepPagerAdapter(getSupportFragmentManager(), recipe);
             vpPager.setAdapter(stepPagerAdapter);
         }
     }

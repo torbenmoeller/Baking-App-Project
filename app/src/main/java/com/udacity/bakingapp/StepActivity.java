@@ -31,7 +31,7 @@ public class StepActivity extends AppCompatActivity {
         this.recipe = CookbookService.getRecipes().stream().filter(x -> x.getId() == recipeId).findFirst().get();
 
         vpPager = findViewById(R.id.vpPager);
-        stepPagerAdapter = new StepPagerAdapter(getSupportFragmentManager(), recipe.getSteps());
+        stepPagerAdapter = new StepPagerAdapter(getSupportFragmentManager(), recipe);
         vpPager.setAdapter(stepPagerAdapter);
     }
 
