@@ -2,8 +2,12 @@ package com.udacity.bakingapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.udacity.bakingapp.adapter.StepPagerAdapter;
 import com.udacity.bakingapp.model.Recipe;
@@ -13,7 +17,7 @@ import com.udacity.bakingapp.recipeservice.CookbookService;
 public class RecipeActivity extends AppCompatActivity implements OnStepSelected {
 
     ViewPager vpPager = null;
-    int recipeId;
+    static int recipeId;
     Recipe recipe = null;
     StepPagerAdapter stepPagerAdapter = null;
     boolean viewPagerAvailable = false;
@@ -24,7 +28,18 @@ public class RecipeActivity extends AppCompatActivity implements OnStepSelected 
         Bundle bundle = getIntent().getExtras();
         setContentView(R.layout.activity_recipe);
 
-        this.recipeId = bundle.getInt(Keys.chosenRecipeId);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+
+
+        if(bundle != null) {
+            recipeId = bundle.getInt(Keys.chosenRecipeId);
+        }else{
+            bundle = new Bundle();
+            bundle.putInt(Keys.chosenRecipeId, recipeId);
+        }
         this.recipe = CookbookService.getRecipes().stream().filter(x -> x.getId() == recipeId).findFirst().get();
 
         RecipeFragment recipeFragment = new RecipeFragment();
@@ -58,6 +73,17 @@ public class RecipeActivity extends AppCompatActivity implements OnStepSelected 
             startChildActivityIntent.putExtras(bundle);
             startActivity(startChildActivityIntent);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

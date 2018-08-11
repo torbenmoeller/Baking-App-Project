@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -26,6 +28,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import com.udacity.bakingapp.model.Recipe;
 import com.udacity.bakingapp.model.Step;
 import com.udacity.bakingapp.recipeservice.CookbookService;
@@ -40,6 +43,11 @@ public class StepFragment extends Fragment {
 
     @BindView(R.id.exo_player_view)
     SimpleExoPlayerView exoPlayerView;
+
+    @Nullable
+    @BindView(R.id.recipe_thumbnail)
+    ImageView recipeThumbnail;
+
     @Nullable
     @BindView(R.id.recipe_step_short_description)
     TextView recipeStepShortDescription;
@@ -52,8 +60,11 @@ public class StepFragment extends Fragment {
     private SimpleExoPlayer exoPlayer;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
+    long playerPosition = 0;
+    boolean getPlayerWhenReady = true;
 
     Step step = null;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -65,32 +76,86 @@ public class StepFragment extends Fragment {
         int stepId  = bundle.getInt(Keys.chosenStepId);
         Recipe recipe = CookbookService.getRecipes().stream().filter(x -> x.getId() == recipeId).findFirst().get();
         this.step = recipe.getSteps().stream().filter(x -> x.getId() == stepId).findFirst().get();
+        if(recipeThumbnail != null) {
+            String image = this.step.getThumbnailUrl();
+            if (!image.isEmpty()) {
+                Picasso.with(this.context)
+                        .load(image)
+                        .into(recipeThumbnail);
+                recipeThumbnail.setVisibility(View.VISIBLE);
+            } else {
+                recipeThumbnail.setVisibility(View.GONE);
+            }
+        }
         return rootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         setDescription();
-        String url = step.getVideoUrl();
-        if(url.isEmpty()){
-            exoPlayerView.setVisibility(View.GONE);
-        }else {
-            Uri uri = Uri.parse(url);
-            initializeMediaSession();
-            initializePlayer(uri);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            String url = step.getVideoUrl();
+            if(url.isEmpty()){
+                exoPlayerView.setVisibility(View.GONE);
+            }else {
+                Uri uri = Uri.parse(url);
+                initializeMediaSession();
+                initializePlayer(uri);
+            }
+        }
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if ((Util.SDK_INT <= 23 || exoPlayer == null)) {
+            String url = step.getVideoUrl();
+            if(url.isEmpty()){
+                exoPlayerView.setVisibility(View.GONE);
+            }else {
+                Uri uri = Uri.parse(url);
+                initializeMediaSession();
+                initializePlayer(uri);
+            }
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        if(exoPlayer != null){
+            playerPosition = exoPlayer.getCurrentPosition();
+            savedInstanceState.putLong(Keys.PLAYER_POSITION, playerPosition );
+            getPlayerWhenReady = exoPlayer.getPlayWhenReady();
+            savedInstanceState.putBoolean(Keys.STATE, getPlayerWhenReady);
         }
     }
-    private void setDescription(){
-        if(step == null) {
-            return;
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null) {
+            playerPosition = savedInstanceState.getLong(Keys.PLAYER_POSITION);
+            getPlayerWhenReady = savedInstanceState.getBoolean(Keys.STATE);
         }
-        if(step.getDescription() == null){
-            return;
-        }
-        if(recipeStepShortDescription == null){
-            return;
-        }
-        recipeStepShortDescription.setText(step.getDescription());
     }
 
     @Override public void onDestroyView() {
@@ -104,6 +169,21 @@ public class StepFragment extends Fragment {
         releasePlayer();
 //        mMediaSession.setActive(false);
     }
+
+
+    private void setDescription(){
+        if(step == null) {
+            return;
+        }
+        if(step.getDescription() == null){
+            return;
+        }
+        if(recipeStepShortDescription == null){
+            return;
+        }
+        recipeStepShortDescription.setText(step.getDescription());
+    }
+
 
     //Copied from lesson from Udacity
     private void initializePlayer(Uri mediaUri) {
@@ -128,8 +208,10 @@ public class StepFragment extends Fragment {
                 null,
                 null);
         exoPlayer.prepare(mediaSource);
-//        exoPlayer.setPlayWhenReady(true);
-        exoPlayer.setPlayWhenReady(false);
+        if(playerPosition != 0){
+            exoPlayer.seekTo(playerPosition);
+        }
+        exoPlayer.setPlayWhenReady(getPlayerWhenReady);
 
     }
 
