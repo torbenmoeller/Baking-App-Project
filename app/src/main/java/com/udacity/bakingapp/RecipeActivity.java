@@ -41,13 +41,14 @@ public class RecipeActivity extends AppCompatActivity implements OnStepSelected 
             bundle.putInt(Keys.chosenRecipeId, recipeId);
         }
         this.recipe = CookbookService.getRecipes().stream().filter(x -> x.getId() == recipeId).findFirst().get();
-
-        RecipeFragment recipeFragment = new RecipeFragment();
-        recipeFragment.setArguments(bundle);
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.frame_cookbook, recipeFragment)
-                .commit();
+        if (savedInstanceState == null) {
+            RecipeFragment recipeFragment = new RecipeFragment();
+            recipeFragment.setArguments(bundle);
+            android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.frame_cookbook, recipeFragment)
+                    .commit();
+        }
 
         vpPager = findViewById(R.id.vpPager);
         viewPagerAvailable = vpPager != null;

@@ -135,6 +135,7 @@ public class StepFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        releasePlayer();
 
     }
 
@@ -166,7 +167,6 @@ public class StepFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releasePlayer();
 //        mMediaSession.setActive(false);
     }
 
